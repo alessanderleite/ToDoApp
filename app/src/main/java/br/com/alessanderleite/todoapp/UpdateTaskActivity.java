@@ -115,6 +115,9 @@ public class UpdateTaskActivity extends AppCompatActivity {
                 startActivity(new Intent(UpdateTaskActivity.this, MainActivity.class));
             }
         }
+
+        UpdateTask ut = new UpdateTask();
+        ut.execute();
     }
 
     private void deleteTask(final Task task) {
