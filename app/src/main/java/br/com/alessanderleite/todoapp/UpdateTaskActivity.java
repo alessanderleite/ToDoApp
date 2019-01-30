@@ -1,7 +1,9 @@
 package br.com.alessanderleite.todoapp;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -34,6 +36,29 @@ public class UpdateTaskActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Toast.makeText(getApplicationContext(), "Clicked", Toast.LENGTH_LONG).show();
                 updateTask(task);
+            }
+        });
+
+        findViewById(R.id.button_delete).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(UpdateTaskActivity.this);
+                builder.setTitle("Are you sure?");
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        deleteTask(task);
+                    }
+                });
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                });
+
+                AlertDialog ad = builder.create();
+                ad.show();
             }
         });
     }
@@ -90,5 +115,29 @@ public class UpdateTaskActivity extends AppCompatActivity {
                 startActivity(new Intent(UpdateTaskActivity.this, MainActivity.class));
             }
         }
+    }
+
+    private void deleteTask(final Task task) {
+        class DeleteTask extends AsyncTask<Void, Void, Void> {
+
+            @Override
+            protected Void doInBackground(Void... voids) {
+                DatabaseClient.getInstance(getApplicationContext()).getAppDatabase()
+                        .taskDao()
+                        .delete(task);
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                Toast.makeText(getApplicationContext(), "Deleted", Toast.LENGTH_LONG).show();
+                finish();
+                startActivity(new Intent(UpdateTaskActivity.this, MainActivity.class));
+            }
+        }
+
+        DeleteTask dt = new DeleteTask();
+        dt.execute();
     }
 }
