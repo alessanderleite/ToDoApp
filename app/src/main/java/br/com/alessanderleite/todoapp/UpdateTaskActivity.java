@@ -25,4 +25,11 @@ public class UpdateTaskActivity extends AppCompatActivity {
 
         loadTask(task);
     }
+
+    private void loadTask(Task task) {
+        editTextTask.setText(task.getTask());
+        editTextDesc.setText(task.getDesc());
+        editTextFinishBy.setText(task.getFinishBy());
+        checkBoxFinished.setChecked(task.isFinished());
+    }
 }
